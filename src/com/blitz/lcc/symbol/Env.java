@@ -11,7 +11,7 @@ public class Env {
     private Map<Token, Id> table;
     protected Env prev;
 
-    protected Env(Env n) { table = new Hashtable(); prev = n;}
+    public Env(Env n) { table = new Hashtable(); prev = n;}
     public void put(Token w,Id id) { table.put(w,id);}
     public Id get(Token w) {
         for(Env e = this; e != null; e = e.prev){

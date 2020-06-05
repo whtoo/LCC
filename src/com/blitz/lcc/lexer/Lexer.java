@@ -5,7 +5,9 @@ import com.blitz.lcc.symbol.*;
 
 public class Lexer {
     public static int line = 1;
+    public static int col = 0;
     char peek = ' ';
+    StringBuffer buffer = new StringBuffer();
     Map<String,Word> words = new Hashtable();
     void reserve(Word w) {words.put(w.lexeme,w);}
 
@@ -23,7 +25,10 @@ public class Lexer {
         reserve(Type.Float);
     }
     /* 从输入缓冲区读入一个字符 */
-    void readch() throws IOException { peek = (char)System.in.read();}
+    void readch() throws IOException {
+        peek = (char)System.in.read();
+        buffer.append(peek);
+    }
     /* 将输入缓冲区读入的字符和当前传入字符做比较 */
     boolean readch(char c) throws IOException {
         readch();
@@ -34,23 +39,29 @@ public class Lexer {
 
     public Token scan() throws IOException {
         for(;;readch()){
-            if(peek == ' ' || peek == '\t') continue;
-            else if(peek == '\n') line += 1;
+            if(peek == ' ' || peek == '\t') {
+                col++;
+                continue;
+            }
+            else if(peek == '\n') {
+                col = 0;
+                line += 1;
+            }
             else break;
         }
         switch (peek){
             case '&':
-                if(readch('&')) return Word.and; else new Token('&');
+                if(readch('&')) return Word.and; else return new Token('&');
             case '|':
-                if (readch('|')) return Word.or; else  new Token('|');
+                if (readch('|')) return Word.or; else return new Token('|');
             case '=':
-                if(readch('=')) return Word.eq; else new Token('=');
+                if(readch('=')) return Word.eq; else return new Token('=');
             case '!':
-                if(readch('=')) return Word.ne; else new Token('!');
+                if(readch('=')) return Word.ne; else return new Token('!');
             case '<':
-                if(readch('=')) return Word.le; else new Token('<');
+                if(readch('=')) return Word.le; else return new Token('<');
             case '>':
-                if(readch('=')) return Word.ge; else new Token('>');
+                if(readch('=')) return Word.ge; else return new Token('>');
         }
         /*数字的字符串转换*/
         if(Character.isDigit(peek)){
