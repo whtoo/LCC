@@ -10,7 +10,7 @@ public class Else extends Stmt {
     }
 
     @Override
-    public void gen(int a, int b) {
+    public void gen(int b, int a) {
         int label1 = newlabel();
         int label2 = newlabel();
         expr.jumping(0,label2);
